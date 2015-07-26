@@ -5,8 +5,12 @@ class OctetBufferError implements Error {
         return new OctetBufferError('Error reading <' + type + '>', 'Buffer is missing ' + missingBytes + ' bytes');
     }
 
-    static errorConstructorWrongType(): OctetBufferError {
+    static errorConstructorWrongParameterType(): OctetBufferError {
         return new OctetBufferError('Error creating <OctetBuffer>', 'Provided constructor parameter is not valid');
+    }
+
+    static errorMethodWrongParameterType(): OctetBufferError {
+        return new OctetBufferError('Error interacting with <OctetBuffer>', 'Provided parameter is not valid');
     }
 }
 
@@ -24,6 +28,7 @@ export class OctetBuffer {
             return this._backingBuffer;
         }
         set backingBuffer(buffer: Buffer) {
+            this.checkParameterIsBuffer(buffer);
             this._backingBuffer = buffer;
         }
 
@@ -55,13 +60,14 @@ export class OctetBuffer {
                 this.backingBuffer = new Buffer(0);
             }
             else {
-                throw OctetBufferError.errorConstructorWrongType();
+                throw OctetBufferError.errorConstructorWrongParameterType();
             }
 
             this.reset();
         }
 
         private incrementPositionBy(incrementBy: number): void {
+            this.checkParameterIsNumber(incrementBy);
             this.position += incrementBy;
         }
 
@@ -95,6 +101,7 @@ export class OctetBuffer {
         }
 
         readBuffer(count: number = 1): Buffer {
+            this.checkParameterIsNumber(count);
             this.checkRemainingBytesAndThrow('Buffer', count);
             var readBuffer = new Buffer(count);
             this.backingBuffer.copy(readBuffer, 0, this.position, this.position + count);
@@ -108,6 +115,7 @@ export class OctetBuffer {
         }
 
         writeUInt8(uint: number): OctetBuffer {
+            this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT8_BYTES);
             this.backingBuffer.writeUInt8(uint, this.position);
             this.incrementPositionBy(UINT8_BYTES);
@@ -115,18 +123,21 @@ export class OctetBuffer {
         }
 
         writeUInt16(uint: number): OctetBuffer {
+            this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT16_BYTES);
             this.backingBuffer.writeUInt16BE(uint, this.position);
             this.incrementPositionBy(UINT16_BYTES);
             return this;
         }
         writeUInt24(uint: number): OctetBuffer {
+            this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT24_BYTES);
             OctetBuffer.writeUInt24BE(this.backingBuffer, uint, this.position);
             this.incrementPositionBy(UINT24_BYTES);
             return this;
         }
         writeUInt32(uint: number): OctetBuffer {
+            this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT32_BYTES);
             this.backingBuffer.writeUInt32BE(uint, this.position);
             this.incrementPositionBy(UINT32_BYTES);
@@ -134,11 +145,13 @@ export class OctetBuffer {
         }
 
         writeArray(array: number[]): OctetBuffer {
+            this.checkParameterIsArray(array);
             var buffer = new Buffer(array);
             return this.writeBuffer(buffer);
         }
 
         writeBuffer(buffer: Buffer): OctetBuffer {
+            this.checkParameterIsBuffer(buffer);
             this.extendBackingBufferToAcceptAdditionalBytes(buffer.length);
             this.writeBufferToBackingBuffer(buffer);
             this.incrementPositionBy(buffer.length);
@@ -182,6 +195,31 @@ export class OctetBuffer {
             if (requiredBytes > this.remaining) {
                 var missingBytes = requiredBytes - this.remaining;
                 throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
+            }
+        }
+        private checkParameterIsNumber(param: any){
+            if (param == null){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+            else if (typeof param !== 'number'){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+        }
+
+        private checkParameterIsArray(param: any[]){
+            if (param == null){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+            else if (typeof param !== 'number'){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+        }
+        private checkParameterIsBuffer(param: any){
+            if (param == null){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+            else if (!Buffer.isBuffer(param)){
+                throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
 }

@@ -4,21 +4,34 @@ var OctetBufferError = (function () {
         this.message = message;
     }
     OctetBufferError.errorReadingCausedByInsufficientBytes = function (type, missingBytes) {
-        return new OctetBufferError('Error reading ' + type, 'Buffer is missing ' + missingBytes + ' bytes');
+        return new OctetBufferError('Error reading <' + type + '>', 'Buffer is missing ' + missingBytes + ' bytes');
+    };
+    OctetBufferError.errorConstructorWrongParameterType = function () {
+        return new OctetBufferError('Error creating <OctetBuffer>', 'Provided constructor parameter is not valid');
+    };
+    OctetBufferError.errorMethodWrongParameterType = function () {
+        return new OctetBufferError('Error interacting with <OctetBuffer>', 'Provided parameter is not valid');
     };
     return OctetBufferError;
 })();
+var UINT8_BYTES = 1;
+var UINT16_BYTES = 2;
+var UINT24_BYTES = 3;
+var UINT32_BYTES = 4;
 var OctetBuffer = (function () {
     function OctetBuffer(param) {
-        if (typeof buffer === 'string') {
+        if (typeof param === 'string') {
             var buffer = new Buffer(param, 'hex');
             this.backingBuffer = buffer;
         }
         else if (Buffer.isBuffer(param)) {
             this.backingBuffer = param;
         }
-        else {
+        else if (param == null) {
             this.backingBuffer = new Buffer(0);
+        }
+        else {
+            throw OctetBufferError.errorConstructorWrongParameterType();
         }
         this.reset();
     }
@@ -27,6 +40,7 @@ var OctetBuffer = (function () {
             return this._backingBuffer;
         },
         set: function (buffer) {
+            this.checkParameterIsBuffer(buffer);
             this._backingBuffer = buffer;
         },
         enumerable: true,
@@ -57,81 +71,90 @@ var OctetBuffer = (function () {
         configurable: true
     });
     OctetBuffer.prototype.incrementPositionBy = function (incrementBy) {
+        this.checkParameterIsNumber(incrementBy);
         this.position += incrementBy;
     };
     OctetBuffer.prototype.reset = function () {
         this.position = 0;
     };
     OctetBuffer.prototype.readUInt8 = function () {
+        this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
         var uint = this.backingBuffer.readUInt8(this.position);
-        this.incrementPositionBy(1);
+        this.incrementPositionBy(UINT8_BYTES);
         return uint;
     };
     OctetBuffer.prototype.readUInt16 = function () {
+        this.checkRemainingBytesAndThrow('uint16', UINT16_BYTES);
         var uint = this.backingBuffer.readUInt16BE(this.position);
-        this.incrementPositionBy(2);
+        this.incrementPositionBy(UINT16_BYTES);
         return uint;
     };
     OctetBuffer.prototype.readUInt24 = function () {
+        this.checkRemainingBytesAndThrow('uint24', UINT24_BYTES);
         var uint = OctetBuffer.readUInt24BE(this.backingBuffer, this.position);
-        this.incrementPositionBy(3);
+        this.incrementPositionBy(UINT24_BYTES);
         return uint;
     };
     OctetBuffer.prototype.readUInt32 = function () {
+        this.checkRemainingBytesAndThrow('uint32', UINT32_BYTES);
         var uint = this.backingBuffer.readUInt32BE(this.position);
-        this.incrementPositionBy(4);
+        this.incrementPositionBy(UINT32_BYTES);
         return uint;
-    };
-    OctetBuffer.prototype.readBufferRemainig = function () {
-        var remainingBuffer = this.readBuffer(this.remaining);
-        this.incrementPositionBy(remainingBuffer.length);
-        return remainingBuffer;
     };
     OctetBuffer.prototype.readBuffer = function (count) {
         if (count === void 0) { count = 1; }
-        if (count > this.remaining) {
-            return null;
-        }
+        this.checkParameterIsNumber(count);
+        this.checkRemainingBytesAndThrow('Buffer', count);
         var readBuffer = new Buffer(count);
         this.backingBuffer.copy(readBuffer, 0, this.position, this.position + count);
         this.incrementPositionBy(count);
         return readBuffer;
     };
+    OctetBuffer.prototype.readBufferRemainig = function () {
+        var readBuffer = this.readBuffer(this.remaining);
+        return readBuffer;
+    };
     OctetBuffer.prototype.writeUInt8 = function (uint) {
-        this.extendBackingBufferToAcceptAdditionalBytes(1);
+        this.checkParameterIsNumber(uint);
+        this.extendBackingBufferToAcceptAdditionalBytes(UINT8_BYTES);
         this.backingBuffer.writeUInt8(uint, this.position);
-        this.incrementPositionBy(1);
+        this.incrementPositionBy(UINT8_BYTES);
         return this;
     };
     OctetBuffer.prototype.writeUInt16 = function (uint) {
-        this.extendBackingBufferToAcceptAdditionalBytes(2);
+        this.checkParameterIsNumber(uint);
+        this.extendBackingBufferToAcceptAdditionalBytes(UINT16_BYTES);
         this.backingBuffer.writeUInt16BE(uint, this.position);
-        this.incrementPositionBy(2);
+        this.incrementPositionBy(UINT16_BYTES);
         return this;
     };
     OctetBuffer.prototype.writeUInt24 = function (uint) {
-        this.extendBackingBufferToAcceptAdditionalBytes(2);
+        this.checkParameterIsNumber(uint);
+        this.extendBackingBufferToAcceptAdditionalBytes(UINT24_BYTES);
         OctetBuffer.writeUInt24BE(this.backingBuffer, uint, this.position);
-        this.incrementPositionBy(3);
+        this.incrementPositionBy(UINT24_BYTES);
         return this;
     };
     OctetBuffer.prototype.writeUInt32 = function (uint) {
-        this.extendBackingBufferToAcceptAdditionalBytes(4);
+        this.checkParameterIsNumber(uint);
+        this.extendBackingBufferToAcceptAdditionalBytes(UINT32_BYTES);
         this.backingBuffer.writeUInt32BE(uint, this.position);
-        this.incrementPositionBy(4);
+        this.incrementPositionBy(UINT32_BYTES);
         return this;
     };
     OctetBuffer.prototype.writeArray = function (array) {
+        this.checkParameterIsArray(array);
         var buffer = new Buffer(array);
         return this.writeBuffer(buffer);
     };
     OctetBuffer.prototype.writeBuffer = function (buffer) {
+        this.checkParameterIsBuffer(buffer);
         this.extendBackingBufferToAcceptAdditionalBytes(buffer.length);
         this.writeBufferToBackingBuffer(buffer);
         this.incrementPositionBy(buffer.length);
         return this;
     };
-    OctetBuffer.prototype.toString = function () {
+    OctetBuffer.prototype.serialize = function () {
         return this._backingBuffer.toString('hex');
     };
     OctetBuffer.prototype.extendBackingBufferToAcceptAdditionalBytes = function (additionalBytes) {
@@ -162,6 +185,30 @@ var OctetBuffer = (function () {
         if (requiredBytes > this.remaining) {
             var missingBytes = requiredBytes - this.remaining;
             throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
+        }
+    };
+    OctetBuffer.prototype.checkParameterIsNumber = function (param) {
+        if (param == null) {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+        else if (typeof param !== 'number') {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+    };
+    OctetBuffer.prototype.checkParameterIsArray = function (param) {
+        if (param == null) {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+        else if (typeof param !== 'number') {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+    };
+    OctetBuffer.prototype.checkParameterIsBuffer = function (param) {
+        if (param == null) {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+        else if (!Buffer.isBuffer(param)) {
+            throw OctetBufferError.errorMethodWrongParameterType();
         }
     };
     return OctetBuffer;
