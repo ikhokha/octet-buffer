@@ -169,6 +169,12 @@ export class OctetBuffer {
             return this._backingBuffer.toString('hex').toUpperCase();
         }
 
+        peek(): number {
+            this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
+            var uint: number = this.backingBuffer.readUInt8(this.position);
+            return uint;
+        }
+
         private extendBackingBufferToAcceptAdditionalBytes(additionalBytes: number): void {
             if (this.remaining >= additionalBytes) {
                 return;
