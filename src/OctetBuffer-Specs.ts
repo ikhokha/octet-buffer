@@ -49,7 +49,7 @@ describe('OctetBuffer', () => {
             expect(octetBuffer).to.exist;
             expect(octetBuffer.available).to.equal(0);
             expect(octetBuffer.position).to.equal(0);
-            expect(octetBuffer.remaining).to.equal(0);            
+            expect(octetBuffer.remaining).to.equal(0);
 
             serialized = octetBuffer.serialize();
             expect(serialized).to.equal(expectedString);
@@ -75,6 +75,32 @@ describe('OctetBuffer', () => {
             octetBuffer = new OctetBuffer(providedString);
             serialized = octetBuffer.serialize();
             expect(serialized).to.equal(providedString);
+        });
+
+    });
+
+    describe('#peek', () => {
+
+        it('returns correct number', () => {
+            var providedString: string = 'de'.toUpperCase();
+            var expectedNumber: number = 0xDE;
+
+            octetBuffer = new OctetBuffer(providedString);
+            var number: number = octetBuffer.peek();
+            expect(octetBuffer.available).to.equal(1);
+            expect(octetBuffer.position).to.equal(0);
+            expect(octetBuffer.remaining).to.equal(1);
+            expect(number).to.equal(expectedNumber);
+        });
+
+        it('fails in case of missing bytes', () => {
+            var providedString: string = '';
+
+            octetBuffer = new OctetBuffer(providedString);
+            var throwFunction = () => {
+                octetBuffer.peek();
+            };
+            expect(throwFunction).to.throw;
         });
 
     });

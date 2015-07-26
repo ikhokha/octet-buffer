@@ -21,6 +21,7 @@ export declare class OctetBuffer {
     writeArray(array: number[]): OctetBuffer;
     writeBuffer(buffer: Buffer): OctetBuffer;
     serialize(): string;
+    peek(): number;
     private extendBackingBufferToAcceptAdditionalBytes(additionalBytes);
     private writeBufferToBackingBuffer(buffer);
     private static readUInt24BE(buffer, position);

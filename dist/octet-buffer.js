@@ -157,6 +157,11 @@ var OctetBuffer = (function () {
     OctetBuffer.prototype.serialize = function () {
         return this._backingBuffer.toString('hex').toUpperCase();
     };
+    OctetBuffer.prototype.peek = function () {
+        this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
+        var uint = this.backingBuffer.readUInt8(this.position);
+        return uint;
+    };
     OctetBuffer.prototype.extendBackingBufferToAcceptAdditionalBytes = function (additionalBytes) {
         if (this.remaining >= additionalBytes) {
             return;
