@@ -5,7 +5,7 @@ export declare class OctetBuffer {
     position: number;
     available: number;
     remaining: number;
-    constructor(buffer?: Buffer);
+    constructor(param?: Buffer | string);
     private incrementPositionBy(incrementBy);
     reset(): void;
     readUInt8(): number;
@@ -20,11 +20,10 @@ export declare class OctetBuffer {
     writeUInt32(uint: number): OctetBuffer;
     writeArray(array: number[]): OctetBuffer;
     writeBuffer(buffer: Buffer): OctetBuffer;
+    toString(): string;
     private extendBackingBufferToAcceptAdditionalBytes(additionalBytes);
     private writeBufferToBackingBuffer(buffer);
-    toString(): string;
     private static readUInt24BE(buffer, position);
     private static writeUInt24BE(buffer, uint, positon);
-    static hexStringMatchesHexBitflags(value: string, bitflags: string): boolean;
-    static hexStringMatchesHexBitpattern(value: string, bitpattern: string): boolean;
+    private checkRemainingBytesAndThrow(type, requiredBytes);
 }

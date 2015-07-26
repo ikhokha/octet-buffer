@@ -10,8 +10,11 @@
     "compileOnSave": false,
     "files": [
         "./typings/node/node.d.ts",
+        "./typings/chai/chai.d.ts",
+        "./typings/mocha/mocha.d.ts",
 
-        "./src/OctetBuffer.ts"
+        "./src/OctetBuffer.ts",
+        "./src/OctetBuffer-Specs.ts"
     ],
     "bundles": {
         "octet-buffer": {
