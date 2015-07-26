@@ -117,14 +117,14 @@ var OctetBuffer = (function () {
     OctetBuffer.prototype.writeUInt8 = function (uint) {
         this.checkParameterIsNumber(uint);
         this.extendBackingBufferToAcceptAdditionalBytes(UINT8_BYTES);
-        this.backingBuffer.writeUInt8(uint, this.position);
+        OctetBuffer.writeUInt8(this.backingBuffer, uint, this.position);
         this.incrementPositionBy(UINT8_BYTES);
         return this;
     };
     OctetBuffer.prototype.writeUInt16 = function (uint) {
         this.checkParameterIsNumber(uint);
         this.extendBackingBufferToAcceptAdditionalBytes(UINT16_BYTES);
-        this.backingBuffer.writeUInt16BE(uint, this.position);
+        OctetBuffer.writeUInt16BE(this.backingBuffer, uint, this.position);
         this.incrementPositionBy(UINT16_BYTES);
         return this;
     };
@@ -138,7 +138,7 @@ var OctetBuffer = (function () {
     OctetBuffer.prototype.writeUInt32 = function (uint) {
         this.checkParameterIsNumber(uint);
         this.extendBackingBufferToAcceptAdditionalBytes(UINT32_BYTES);
-        this.backingBuffer.writeUInt32BE(uint, this.position);
+        OctetBuffer.writeUInt32BE(this.backingBuffer, uint, this.position);
         this.incrementPositionBy(UINT32_BYTES);
         return this;
     };
@@ -155,7 +155,7 @@ var OctetBuffer = (function () {
         return this;
     };
     OctetBuffer.prototype.serialize = function () {
-        return this._backingBuffer.toString('hex');
+        return this._backingBuffer.toString('hex').toUpperCase();
     };
     OctetBuffer.prototype.extendBackingBufferToAcceptAdditionalBytes = function (additionalBytes) {
         if (this.remaining >= additionalBytes) {
@@ -176,10 +176,23 @@ var OctetBuffer = (function () {
         uint |= buffer.readUInt8(position + 2) << 0;
         return uint;
     };
+    OctetBuffer.writeUInt8 = function (buffer, uint, positon) {
+        buffer.writeUInt8((uint & 0xff) >>> 0, positon);
+    };
+    OctetBuffer.writeUInt16BE = function (buffer, uint, positon) {
+        buffer.writeUInt8((uint & 0xff00) >>> 8, positon);
+        buffer.writeUInt8((uint & 0x00ff) >>> 0, positon + 1);
+    };
     OctetBuffer.writeUInt24BE = function (buffer, uint, positon) {
         buffer.writeUInt8((uint & 0xff0000) >>> 16, positon);
         buffer.writeUInt8((uint & 0x00ff00) >>> 8, positon + 1);
         buffer.writeUInt8((uint & 0x0000ff) >>> 0, positon + 2);
+    };
+    OctetBuffer.writeUInt32BE = function (buffer, uint, positon) {
+        buffer.writeUInt8((uint & 0xff000000) >>> 24, positon);
+        buffer.writeUInt8((uint & 0x00ff0000) >>> 16, positon + 1);
+        buffer.writeUInt8((uint & 0x0000ff00) >>> 8, positon + 2);
+        buffer.writeUInt8((uint & 0x000000ff) >>> 0, positon + 3);
     };
     OctetBuffer.prototype.checkRemainingBytesAndThrow = function (type, requiredBytes) {
         if (requiredBytes > this.remaining) {
