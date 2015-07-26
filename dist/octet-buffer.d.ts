@@ -24,7 +24,10 @@ export declare class OctetBuffer {
     private extendBackingBufferToAcceptAdditionalBytes(additionalBytes);
     private writeBufferToBackingBuffer(buffer);
     private static readUInt24BE(buffer, position);
+    private static writeUInt8(buffer, uint, positon);
+    private static writeUInt16BE(buffer, uint, positon);
     private static writeUInt24BE(buffer, uint, positon);
+    private static writeUInt32BE(buffer, uint, positon);
     private checkRemainingBytesAndThrow(type, requiredBytes);
     private checkParameterIsNumber(param);
     private checkParameterIsArray(param);
