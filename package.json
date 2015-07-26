@@ -6,7 +6,7 @@
   "private": true,
   "main": "./dist/octet-buffer.js",
   "typescript": {
-    "definition": "dist/octet-buffer.d.ts"
+    "definition": "./dist/octet-buffer.d.ts"
   },
   "scripts": {
     "prepublish": "tsd reinstall -s",
