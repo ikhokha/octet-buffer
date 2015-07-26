@@ -12,18 +12,21 @@ export declare class OctetBuffer {
     readUInt16(): number;
     readUInt24(): number;
     readUInt32(): number;
-    readBufferRemainig(): Buffer;
     readBuffer(count?: number): Buffer;
+    readBufferRemainig(): Buffer;
     writeUInt8(uint: number): OctetBuffer;
     writeUInt16(uint: number): OctetBuffer;
     writeUInt24(uint: number): OctetBuffer;
     writeUInt32(uint: number): OctetBuffer;
     writeArray(array: number[]): OctetBuffer;
     writeBuffer(buffer: Buffer): OctetBuffer;
-    toString(): string;
+    serialize(): string;
     private extendBackingBufferToAcceptAdditionalBytes(additionalBytes);
     private writeBufferToBackingBuffer(buffer);
     private static readUInt24BE(buffer, position);
     private static writeUInt24BE(buffer, uint, positon);
     private checkRemainingBytesAndThrow(type, requiredBytes);
+    private checkParameterIsNumber(param);
+    private checkParameterIsArray(param);
+    private checkParameterIsBuffer(param);
 }

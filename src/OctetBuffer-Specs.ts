@@ -1,9 +1,6 @@
 import { expect } from 'chai';
 import { OctetBuffer } from 'OctetBuffer';
 
-/**
- * Unit tests
- */
 describe('OctetBuffer', () => {
 
     var buffer: Buffer;
@@ -58,5 +55,7 @@ describe('OctetBuffer', () => {
             expect(throwFunction).to.throw;
             expect(octetBuffer).to.not.exist;
         });
+
     });
+
 });
