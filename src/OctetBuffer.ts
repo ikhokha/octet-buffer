@@ -1,3 +1,15 @@
+class OctetBufferError implements Error {
+    constructor(public name: string, public message: string) {}
+
+    static errorReadingCausedByInsufficientBytes(type: string, missingBytes: number): OctetBufferError {
+        return new OctetBufferError('Error reading ' + type, 'Buffer is missing ' + missingBytes + ' bytes');
+    }
+
+    static errorConstructorWrongType(): OctetBufferError {
+        return new OctetBufferError('Error creating OctetBuffer', 'Provided parameter is not valid');
+    }
+}
+
 export class OctetBuffer {
 
         private _backingBuffer: Buffer;
@@ -26,11 +38,21 @@ export class OctetBuffer {
             return this.available - this.position;
         }
 
-        constructor(buffer?: Buffer) {
-            if (!buffer){
-                buffer = new Buffer(1);
+        constructor(param?: Buffer | string){
+            if (typeof param === 'string'){
+                var buffer = new Buffer(<string>param, 'hex');
+                this.backingBuffer = buffer;
             }
-            this.backingBuffer = buffer;
+            else if (Buffer.isBuffer(param)){
+                this.backingBuffer = <Buffer>param;
+            }
+            else if (param == null){
+                this.backingBuffer = new Buffer(0);
+            }
+            else {
+                throw OctetBufferError.errorConstructorWrongType();
+            }
+
             this.reset();
         }
 
@@ -125,6 +147,10 @@ export class OctetBuffer {
             return this;
         }
 
+        serialize(): string {
+            return this._backingBuffer.toString('hex');
+        }
+
         private extendBackingBufferToAcceptAdditionalBytes(additionalBytes: number): void {
             if (this.remaining >= additionalBytes) {
                 return;
@@ -140,10 +166,6 @@ export class OctetBuffer {
             buffer.copy(this.backingBuffer, this.position, 0, buffer.length);
         }
 
-        toString(): string {
-            return this._backingBuffer.toString('hex');
-        }
-
         private static readUInt24BE(buffer: Buffer, position: number): number {
             var uint: number = 0;
             uint = buffer.readUInt8(position) << 16;
@@ -156,5 +178,12 @@ export class OctetBuffer {
             buffer.writeUInt8((uint & 0xff0000) >>> 16, positon);
             buffer.writeUInt8((uint & 0x00ff00) >>> 8, positon + 1);
             buffer.writeUInt8((uint & 0x0000ff) >>> 0, positon + 2);
+        }
+
+        private checkRemainingBytesAndThrow(type: string, requiredBytes: number){
+            if (requiredBytes > this.remaining) {
+                var missingBytes = requiredBytes - this.remaining;
+                throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
+            }
         }
 }

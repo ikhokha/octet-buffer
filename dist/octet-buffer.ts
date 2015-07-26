@@ -5,6 +5,14 @@ import child  = require("child_process");
 import tls = require("tls");
 import http = require("http");
 import crypto = require("crypto");
+class OctetBufferError implements Error {
+    constructor(public name: string, public message: string) {}
+
+    static errorReadingCausedByInsufficientBytes(type: string, missingBytes: number): OctetBufferError {
+        return new OctetBufferError('Error reading ' + type, 'Buffer is missing ' + missingBytes + ' bytes');
+    }
+}
+
 export class OctetBuffer {
 
         private _backingBuffer: Buffer;
@@ -33,11 +41,18 @@ export class OctetBuffer {
             return this.available - this.position;
         }
 
-        constructor(buffer?: Buffer) {
-            if (!buffer){
-                buffer = new Buffer(1);
+        constructor(param?: Buffer | string){
+            if (typeof buffer === 'string'){
+                var buffer = new Buffer(<string>param, 'hex');
+                this.backingBuffer = buffer;
             }
-            this.backingBuffer = buffer;
+            else if (Buffer.isBuffer(param)){
+                this.backingBuffer = <Buffer>param;
+            }
+            else {
+                this.backingBuffer = new Buffer(0);
+            }
+
             this.reset();
         }
 
@@ -132,6 +147,10 @@ export class OctetBuffer {
             return this;
         }
 
+        toString(): string {
+            return this._backingBuffer.toString('hex');
+        }
+
         private extendBackingBufferToAcceptAdditionalBytes(additionalBytes: number): void {
             if (this.remaining >= additionalBytes) {
                 return;
@@ -145,10 +164,6 @@ export class OctetBuffer {
 
         private writeBufferToBackingBuffer(buffer: Buffer): void {
             buffer.copy(this.backingBuffer, this.position, 0, buffer.length);
-        }
-
-        toString(): string {
-            return this._backingBuffer.toString('hex');
         }
 
         private static readUInt24BE(buffer: Buffer, position: number): number {
@@ -165,50 +180,11 @@ export class OctetBuffer {
             buffer.writeUInt8((uint & 0x0000ff) >>> 0, positon + 2);
         }
 
-        public static hexStringMatchesHexBitflags(value: string, bitflags: string): boolean {
-            bitflags = bitflags.replace(/\s/g, '');
-            var referenceBuffer: OctetBuffer = new OctetBuffer(new Buffer(value, 'hex'));
-            var bitflagsBuffer: OctetBuffer = new OctetBuffer(new Buffer(bitflags, 'hex'));
-
-            if (referenceBuffer.remaining !== bitflagsBuffer.remaining){
-                return false;
+        private checkRemainingBytesAndThrow(type: string, requiredBytes: number){
+            if (requiredBytes > this.remaining) {
+                var missingBytes = requiredBytes - this.remaining;
+                throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
             }
-
-            while (referenceBuffer.remaining > 0){
-                var referenceByte: number = referenceBuffer.readUInt8();
-                var bitflagByte: number = bitflagsBuffer.readUInt8();
-                var bitflagMatches: boolean = ((referenceByte & bitflagByte) === bitflagByte);
-                if (bitflagMatches === false){
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static hexStringMatchesHexBitpattern(value: string, bitpattern: string): boolean {
-            value = value.replace(/\s/g, '');
-            bitpattern = bitpattern.replace(/\s/g, '');
-
-            if (value.length !== bitpattern.length){
-                return false;
-            }
-
-            for (var i: number = 0; i < value.length; i++){
-                var bitpatternBits: string = bitpattern.charAt(i);
-                if (bitpatternBits === 'x'){
-                    continue;
-                }
-                if (bitpatternBits === '_'){
-                    continue;
-                }
-
-                var valueBits: string = value.charAt(i);
-                if (valueBits !== bitpatternBits){
-                    return false;
-                }
-            }
-
-            return true;
         }
 }
 

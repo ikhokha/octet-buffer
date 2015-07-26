@@ -1,9 +1,25 @@
+var OctetBufferError = (function () {
+    function OctetBufferError(name, message) {
+        this.name = name;
+        this.message = message;
+    }
+    OctetBufferError.errorReadingCausedByInsufficientBytes = function (type, missingBytes) {
+        return new OctetBufferError('Error reading ' + type, 'Buffer is missing ' + missingBytes + ' bytes');
+    };
+    return OctetBufferError;
+})();
 var OctetBuffer = (function () {
-    function OctetBuffer(buffer) {
-        if (!buffer) {
-            buffer = new Buffer(1);
+    function OctetBuffer(param) {
+        if (typeof buffer === 'string') {
+            var buffer = new Buffer(param, 'hex');
+            this.backingBuffer = buffer;
         }
-        this.backingBuffer = buffer;
+        else if (Buffer.isBuffer(param)) {
+            this.backingBuffer = param;
+        }
+        else {
+            this.backingBuffer = new Buffer(0);
+        }
         this.reset();
     }
     Object.defineProperty(OctetBuffer.prototype, "backingBuffer", {
@@ -115,6 +131,9 @@ var OctetBuffer = (function () {
         this.incrementPositionBy(buffer.length);
         return this;
     };
+    OctetBuffer.prototype.toString = function () {
+        return this._backingBuffer.toString('hex');
+    };
     OctetBuffer.prototype.extendBackingBufferToAcceptAdditionalBytes = function (additionalBytes) {
         if (this.remaining >= additionalBytes) {
             return;
@@ -126,9 +145,6 @@ var OctetBuffer = (function () {
     };
     OctetBuffer.prototype.writeBufferToBackingBuffer = function (buffer) {
         buffer.copy(this.backingBuffer, this.position, 0, buffer.length);
-    };
-    OctetBuffer.prototype.toString = function () {
-        return this._backingBuffer.toString('hex');
     };
     OctetBuffer.readUInt24BE = function (buffer, position) {
         var uint = 0;
@@ -142,43 +158,11 @@ var OctetBuffer = (function () {
         buffer.writeUInt8((uint & 0x00ff00) >>> 8, positon + 1);
         buffer.writeUInt8((uint & 0x0000ff) >>> 0, positon + 2);
     };
-    OctetBuffer.hexStringMatchesHexBitflags = function (value, bitflags) {
-        bitflags = bitflags.replace(/\s/g, '');
-        var referenceBuffer = new OctetBuffer(new Buffer(value, 'hex'));
-        var bitflagsBuffer = new OctetBuffer(new Buffer(bitflags, 'hex'));
-        if (referenceBuffer.remaining !== bitflagsBuffer.remaining) {
-            return false;
+    OctetBuffer.prototype.checkRemainingBytesAndThrow = function (type, requiredBytes) {
+        if (requiredBytes > this.remaining) {
+            var missingBytes = requiredBytes - this.remaining;
+            throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
         }
-        while (referenceBuffer.remaining > 0) {
-            var referenceByte = referenceBuffer.readUInt8();
-            var bitflagByte = bitflagsBuffer.readUInt8();
-            var bitflagMatches = ((referenceByte & bitflagByte) === bitflagByte);
-            if (bitflagMatches === false) {
-                return false;
-            }
-        }
-        return true;
-    };
-    OctetBuffer.hexStringMatchesHexBitpattern = function (value, bitpattern) {
-        value = value.replace(/\s/g, '');
-        bitpattern = bitpattern.replace(/\s/g, '');
-        if (value.length !== bitpattern.length) {
-            return false;
-        }
-        for (var i = 0; i < value.length; i++) {
-            var bitpatternBits = bitpattern.charAt(i);
-            if (bitpatternBits === 'x') {
-                continue;
-            }
-            if (bitpatternBits === '_') {
-                continue;
-            }
-            var valueBits = value.charAt(i);
-            if (valueBits !== bitpatternBits) {
-                return false;
-            }
-        }
-        return true;
     };
     return OctetBuffer;
 })();

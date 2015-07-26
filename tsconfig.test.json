@@ -14,11 +14,11 @@
         "./typings/mocha/mocha.d.ts",
 
         "./src/OctetBuffer-Specs.ts"
-    ],    
+    ],
     "bundles": {
         "octet-buffer-test": {
             "files": [
-                "./typings/node/node.d.ts",            
+                "./typings/node/node.d.ts",
                 "./typings/chai/chai.d.ts",
                 "./typings/mocha/mocha.d.ts",
 
