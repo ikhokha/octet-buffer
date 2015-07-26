@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "module": "commonjs",
+        "removeComments": true,
+        "sourceMap": false,
+        "target": "es5",
+        "noImplicitAny": true
+    },
+    "compileOnSave": false,
+    "files": [
+        "./typings/node/node.d.ts",
+
+        "./src/OctetBuffer.ts"
+    ],
+    "bundles": {
+        "octet-buffer": {
+            "files": [
+                "./typings/node/node.d.ts",
+
+                "./src/OctetBuffer.ts"
+            ]
+        }
+    }
+}
