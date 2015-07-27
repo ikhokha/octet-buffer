@@ -5,24 +5,19 @@
         "removeComments": true,
         "sourceMap": false,
         "target": "es5",
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "outDir": "./dist",
+        "rootDir": "./src"
     },
-    "compileOnSave": false,
-    "files": [
-        "./typings/node/node.d.ts",
-        "./typings/chai/chai.d.ts",
-        "./typings/mocha/mocha.d.ts",
-
-        "./src/OctetBuffer.ts",
-        "./src/OctetBuffer-Specs.ts"
+    "compileOnSave": true,
+    "filesGlob": [
+        "./src/**/*.ts",
+        "./typings/tsd.d.ts",
+        "!./node_modules/**/*.ts"
     ],
-    "bundles": {
-        "octet-buffer": {
-            "files": [
-                "./typings/node/node.d.ts",
-
-                "./src/OctetBuffer.ts"
-            ]
-        }
-    }
+    "files": [
+        "./src/OctetBuffer-Specs.ts",
+        "./src/OctetBuffer.ts",
+        "./typings/tsd.d.ts"
+    ]
 }

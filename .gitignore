@@ -1,4 +1,11 @@
-.DS_Store
+#exclude dev/transient/generated files
 node_modules
-/dist/src
-/test
+release/*/*-Specs.*
+
+#exlude system files
+.DS_Store
+._*
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini

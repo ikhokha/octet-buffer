@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { OctetBuffer } from 'OctetBuffer';
+import { OctetBuffer } from './OctetBuffer';
 
 describe('OctetBuffer', () => {
 
