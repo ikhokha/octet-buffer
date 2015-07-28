@@ -1,29 +1,33 @@
 {
-  "name": "octet-buffer",
-  "version": "0.0.0",
-  "description": "Read/Write buffer tools",
-  "license": "MIT",
-  "private": true,
-  "main": "./dist/octet-buffer.js",
-  "typescript": {
-    "definition": "dist/octet-buffer.d.ts"
-  },
-  "scripts": {
-    "prepublish": "tsd reinstall -s",
-    "start": "gulp",
-    "build": "gulp build",
-    "test": "gulp test"
-  },
-  "keywords": [
-    "buffer"
-  ],
-  "devDependencies": {
-    "del": "^1.2.0",
-    "gulp": "^3.9.0",
-    "mocha": "^2.2.1",
-    "gulp-mocha": "^2.0.0",
-    "chai": "^2.1.1",
-    "tsproject": "git+https://github.com/eumes/tsproject.git#bbb87e8b0d8b9be23f13c6783d8b70336cd3fc38",
-    "typescript": "1.5.3"
-  }
+    "name": "octet-buffer",
+    "version": "0.0.1",
+    "description": "Lightweight wrapper around Node Buffer, providing streaming read/write for uint8 to unit32",
+    "author": "Simon Eumes <simon@sim0n.net>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eumes/octet-buffer"
+    },
+    "main": "./module/octet-buffer.js",
+    "typescript": {
+        "definition": "./module/octet-buffer.d.ts"
+    },
+    "scripts": {
+        "prepublish": "tsd reinstall -s",
+        "start": "gulp",
+        "build": "gulp build",
+        "test": "gulp test"
+    },
+    "keywords": [
+        "node", "buffer", "bytebuffer", "octet", "uint", "typecript"
+    ],
+    "devDependencies": {
+        "chai": "^2.1.1",
+        "del": "^1.2.0",
+        "gulp": "^3.9.0",
+        "gulp-mocha": "^2.0.0",
+        "gulp-typescript": "^2.8.0",
+        "merge2": "^0.3.6",
+        "mocha": "^2.2.1"
+    }
 }
