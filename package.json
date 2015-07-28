@@ -19,7 +19,7 @@
         "test": "gulp test"
     },
     "keywords": [
-        "node", "buffer", "bytebuffer", "octet", "uint", "typecript"
+        "node", "buffer", "bytebuffer", "octet", "uint", "typescript"
     ],
     "devDependencies": {
         "chai": "^2.1.1",
