@@ -156,6 +156,12 @@ var OctetBuffer = (function () {
         this.incrementPositionBy(buffer.length);
         return this;
     };
+    OctetBuffer.prototype.writeString = function (string) {
+        this.checkParameterIsString(string);
+        string = string.toUpperCase();
+        var buffer = new Buffer(string, 'hex');
+        return this.writeBuffer(buffer);
+    };
     OctetBuffer.prototype.serialize = function () {
         var hex = this._backingBuffer.toString('hex');
         hex = hex.toUpperCase();
@@ -207,6 +213,14 @@ var OctetBuffer = (function () {
         if (requiredBytes > this.remaining) {
             var missingBytes = requiredBytes - this.remaining;
             throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
+        }
+    };
+    OctetBuffer.prototype.checkParameterIsString = function (param) {
+        if (param == null) {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+        else if (typeof param !== 'string') {
+            throw OctetBufferError.errorMethodWrongParameterType();
         }
     };
     OctetBuffer.prototype.checkParameterIsNumber = function (param) {

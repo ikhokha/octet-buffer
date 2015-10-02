@@ -400,6 +400,48 @@ describe('OctetBuffer', () => {
 
     });
 
+    describe('#writeString', () => {
+
+        it('accepts <string>(uppercase)', () => {
+            var providedString: string = '00bb20de'.toUpperCase();
+            var expectedString: string = providedString;
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeString(providedString);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('accepts <string>(lowercase)', () => {
+            var providedString: string = '00bb20de';
+            var expectedString: string = providedString.toUpperCase();
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeString(providedString);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('fails with other type', () => {
+            var providedString: string = '0xDE';
+
+            octetBuffer = new OctetBuffer();
+            var throwFunction = () => {
+                octetBuffer.writeBuffer(<any>providedString);
+            };
+            expect(throwFunction).to.throw;
+        });
+
+    });
+
 
     describe('#readUInt8', () => {
 

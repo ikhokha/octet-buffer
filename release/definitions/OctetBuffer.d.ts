@@ -20,6 +20,7 @@ export declare class OctetBuffer {
     writeUInt32(uint: number): OctetBuffer;
     writeArray(array: number[]): OctetBuffer;
     writeBuffer(buffer: Buffer): OctetBuffer;
+    writeString(string: String): OctetBuffer;
     serialize(): string;
     peek(): number;
     private extendBackingBufferToAcceptAdditionalBytes(additionalBytes);
@@ -30,6 +31,7 @@ export declare class OctetBuffer {
     private static writeUInt24BE(buffer, uint, positon);
     private static writeUInt32BE(buffer, uint, positon);
     private checkRemainingBytesAndThrow(type, requiredBytes);
+    private checkParameterIsString(param);
     private checkParameterIsNumber(param);
     private checkParameterIsArray(param);
     private checkParameterIsBuffer(param);

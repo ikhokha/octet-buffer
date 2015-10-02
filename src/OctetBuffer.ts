@@ -160,6 +160,13 @@ export class OctetBuffer {
             return this;
         }
 
+        writeString(string: String): OctetBuffer {
+            this.checkParameterIsString(string);
+            string = string.toUpperCase();
+            var buffer = new Buffer(string, 'hex');
+            return this.writeBuffer(buffer);
+        }
+
         serialize(): string {
             var hex: string = this._backingBuffer.toString('hex');
             hex = hex.toUpperCase();
@@ -223,6 +230,15 @@ export class OctetBuffer {
                 throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
             }
         }
+
+        private checkParameterIsString(param: any){
+            if (param == null){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+            else if (typeof param !== 'string'){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+        }
         private checkParameterIsNumber(param: any){
             if (param == null){
                 throw OctetBufferError.errorMethodWrongParameterType();
@@ -231,7 +247,6 @@ export class OctetBuffer {
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
-
         private checkParameterIsArray(param: any[]){
             if (param == null){
                 throw OctetBufferError.errorMethodWrongParameterType();
