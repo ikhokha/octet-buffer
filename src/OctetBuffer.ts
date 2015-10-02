@@ -50,7 +50,9 @@ export class OctetBuffer {
 
         constructor(param?: Buffer | string){
             if (typeof param === 'string'){
-                var buffer = new Buffer(<string>param, 'hex');
+                var string: string = <string>param;
+                string = string.toUpperCase();
+                var buffer = new Buffer(string, 'hex');
                 this.backingBuffer = buffer;
             }
             else if (Buffer.isBuffer(param)){
@@ -109,7 +111,7 @@ export class OctetBuffer {
             return readBuffer;
         }
 
-        readBufferRemainig(): Buffer {
+        readBufferRemaining(): Buffer {
             var readBuffer = this.readBuffer(this.remaining);
             return readBuffer;
         }
@@ -158,8 +160,17 @@ export class OctetBuffer {
             return this;
         }
 
+        writeString(string: String): OctetBuffer {
+            this.checkParameterIsString(string);
+            string = string.toUpperCase();
+            var buffer = new Buffer(string, 'hex');
+            return this.writeBuffer(buffer);
+        }
+
         serialize(): string {
-            return this._backingBuffer.toString('hex').toUpperCase();
+            var hex: string = this._backingBuffer.toString('hex');
+            hex = hex.toUpperCase();
+            return hex;
         }
 
         peek(): number {
@@ -219,6 +230,15 @@ export class OctetBuffer {
                 throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
             }
         }
+
+        private checkParameterIsString(param: any){
+            if (param == null){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+            else if (typeof param !== 'string'){
+                throw OctetBufferError.errorMethodWrongParameterType();
+            }
+        }
         private checkParameterIsNumber(param: any){
             if (param == null){
                 throw OctetBufferError.errorMethodWrongParameterType();
@@ -227,12 +247,11 @@ export class OctetBuffer {
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
-
         private checkParameterIsArray(param: any[]){
             if (param == null){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
-            else if (typeof param !== 'number'){
+            else if (!Array.isArray(param)){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }

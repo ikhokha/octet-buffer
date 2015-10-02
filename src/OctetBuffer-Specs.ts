@@ -15,8 +15,9 @@ describe('OctetBuffer', () => {
 
     describe('#constructor', () => {
 
-        it('accepts <string>', () => {
-            var providedString: string = 'deadbeef'.toUpperCase();
+        it('accepts <string>(lowercase)', () => {
+            var providedString: string = 'deadbeef';
+            var expectedString: string = providedString.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
             expect(octetBuffer).to.exist;
@@ -25,7 +26,21 @@ describe('OctetBuffer', () => {
             expect(octetBuffer.remaining).to.equal(4);
 
             serialized = octetBuffer.serialize();
-            expect(serialized).to.equal(providedString);
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('accepts <string>(uppercase)', () => {
+            var providedString: string = 'deadbeef'.toUpperCase();
+            var expectedString: string = providedString;
+
+            octetBuffer = new OctetBuffer(providedString);
+            expect(octetBuffer).to.exist;
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(0);
+            expect(octetBuffer.remaining).to.equal(4);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
         });
 
         it('accepts <Buffer>', () => {
@@ -329,6 +344,104 @@ describe('OctetBuffer', () => {
 
     });
 
+    describe('#writeArray', () => {
+
+        it('accepts <Array>', () => {
+            var providedArray: number[] = [0x00, 0xbb, 0x20, 0xde];
+            var expectedString: string = '00bb20de'.toUpperCase();
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeArray(providedArray);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('fails with other type', () => {
+            var providedString: string = '0xDE';
+
+            octetBuffer = new OctetBuffer();
+            var throwFunction = () => {
+                octetBuffer.writeArray(<any>providedString);
+            };
+            expect(throwFunction).to.throw;
+        });
+
+    });
+
+    describe('#writeBuffer', () => {
+
+        it('accepts <Buffer>', () => {
+            var providedBuffer: Buffer = new Buffer('00BB20DE', 'hex');
+            var expectedString: string = '00bb20de'.toUpperCase();
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeBuffer(providedBuffer);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('fails with other type', () => {
+            var providedString: string = '0xDE';
+
+            octetBuffer = new OctetBuffer();
+            var throwFunction = () => {
+                octetBuffer.writeBuffer(<any>providedString);
+            };
+            expect(throwFunction).to.throw;
+        });
+
+    });
+
+    describe('#writeString', () => {
+
+        it('accepts <string>(uppercase)', () => {
+            var providedString: string = '00bb20de'.toUpperCase();
+            var expectedString: string = providedString;
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeString(providedString);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('accepts <string>(lowercase)', () => {
+            var providedString: string = '00bb20de';
+            var expectedString: string = providedString.toUpperCase();
+
+            octetBuffer = new OctetBuffer();
+            octetBuffer.writeString(providedString);
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('fails with other type', () => {
+            var providedString: string = '0xDE';
+
+            octetBuffer = new OctetBuffer();
+            var throwFunction = () => {
+                octetBuffer.writeBuffer(<any>providedString);
+            };
+            expect(throwFunction).to.throw;
+        });
+
+    });
+
 
     describe('#readUInt8', () => {
 
@@ -432,6 +545,51 @@ describe('OctetBuffer', () => {
             expect(throwFunction).to.throw;
         });
 
+    });
+
+    describe('#readBuffer', () => {
+
+        it('returns correct buffer', () => {
+            var providedString: string = '90fa23de'.toUpperCase();
+            var expectedString: string = '90fa'.toUpperCase();
+
+            octetBuffer = new OctetBuffer(providedString);
+            var buffer: Buffer = octetBuffer.readBuffer(2);
+            var bufferString = buffer.toString('hex').toUpperCase();
+
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(2);
+            expect(octetBuffer.remaining).to.equal(2);
+            expect(bufferString).to.equal(expectedString);
+        });
+
+        it('fails in case of missing bytes', () => {
+            var providedString: string = '0xfa23de';
+
+            octetBuffer = new OctetBuffer(providedString);
+            var throwFunction = () => {
+                octetBuffer.readBuffer(4);
+            };
+            expect(throwFunction).to.throw;
+        });
+
+    });
+
+    describe('#readBufferRemaining', () => {
+
+        it('returns correct buffer', () => {
+            var providedString: string = '90fa23de'.toUpperCase();
+            var expectedString: string = providedString;
+
+            octetBuffer = new OctetBuffer(providedString);
+            var buffer: Buffer = octetBuffer.readBufferRemaining();
+            var bufferString = buffer.toString('hex').toUpperCase();
+
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(4);
+            expect(octetBuffer.remaining).to.equal(0);
+            expect(bufferString).to.equal(providedString);
+        });
     });
 
 

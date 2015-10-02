@@ -21,7 +21,9 @@ var UINT32_BYTES = 4;
 var OctetBuffer = (function () {
     function OctetBuffer(param) {
         if (typeof param === 'string') {
-            var buffer = new Buffer(param, 'hex');
+            var string = param;
+            string = string.toUpperCase();
+            var buffer = new Buffer(string, 'hex');
             this.backingBuffer = buffer;
         }
         else if (Buffer.isBuffer(param)) {
@@ -110,7 +112,7 @@ var OctetBuffer = (function () {
         this.incrementPositionBy(count);
         return readBuffer;
     };
-    OctetBuffer.prototype.readBufferRemainig = function () {
+    OctetBuffer.prototype.readBufferRemaining = function () {
         var readBuffer = this.readBuffer(this.remaining);
         return readBuffer;
     };
@@ -154,8 +156,16 @@ var OctetBuffer = (function () {
         this.incrementPositionBy(buffer.length);
         return this;
     };
+    OctetBuffer.prototype.writeString = function (string) {
+        this.checkParameterIsString(string);
+        string = string.toUpperCase();
+        var buffer = new Buffer(string, 'hex');
+        return this.writeBuffer(buffer);
+    };
     OctetBuffer.prototype.serialize = function () {
-        return this._backingBuffer.toString('hex').toUpperCase();
+        var hex = this._backingBuffer.toString('hex');
+        hex = hex.toUpperCase();
+        return hex;
     };
     OctetBuffer.prototype.peek = function () {
         this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
@@ -205,6 +215,14 @@ var OctetBuffer = (function () {
             throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
         }
     };
+    OctetBuffer.prototype.checkParameterIsString = function (param) {
+        if (param == null) {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+        else if (typeof param !== 'string') {
+            throw OctetBufferError.errorMethodWrongParameterType();
+        }
+    };
     OctetBuffer.prototype.checkParameterIsNumber = function (param) {
         if (param == null) {
             throw OctetBufferError.errorMethodWrongParameterType();
@@ -217,7 +235,7 @@ var OctetBuffer = (function () {
         if (param == null) {
             throw OctetBufferError.errorMethodWrongParameterType();
         }
-        else if (typeof param !== 'number') {
+        else if (!Array.isArray(param)) {
             throw OctetBufferError.errorMethodWrongParameterType();
         }
     };
