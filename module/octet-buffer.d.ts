@@ -14,7 +14,7 @@ declare module OctetBuffer{
     readUInt24(): number;
     readUInt32(): number;
     readBuffer(count?: number): Buffer;
-    readBufferRemainig(): Buffer;
+    readBufferRemaining(): Buffer;
     writeUInt8(uint: number): OctetBuffer;
     writeUInt16(uint: number): OctetBuffer;
     writeUInt24(uint: number): OctetBuffer;
