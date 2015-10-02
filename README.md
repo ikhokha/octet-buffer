@@ -35,7 +35,7 @@ var buffer = new Buffer(hex, 'hex');
 var octetBuffer = new OctetBuffer(buffer);
 ```
 
-### Accessing OctetBuffer Properties
+### Accessing Properties
 
 ```js
 //remaining bytes (or octets if you like) to read
