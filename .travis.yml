@@ -3,6 +3,6 @@ node_js:
   - "0.12"
   - "0.11"
 
-before_script:
-  - npm install -g gulp
+before_install:
+  - npm install -g typescript
   - npm install -g tsd
