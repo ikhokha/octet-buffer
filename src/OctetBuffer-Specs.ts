@@ -15,8 +15,9 @@ describe('OctetBuffer', () => {
 
     describe('#constructor', () => {
 
-        it('accepts <string>', () => {
-            var providedString: string = 'deadbeef'.toUpperCase();
+        it('accepts <string>(lowercase)', () => {
+            var providedString: string = 'deadbeef';
+            var expectedString: string = providedString.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
             expect(octetBuffer).to.exist;
@@ -25,7 +26,21 @@ describe('OctetBuffer', () => {
             expect(octetBuffer.remaining).to.equal(4);
 
             serialized = octetBuffer.serialize();
-            expect(serialized).to.equal(providedString);
+            expect(serialized).to.equal(expectedString);
+        });
+
+        it('accepts <string>(uppercase)', () => {
+            var providedString: string = 'deadbeef'.toUpperCase();
+            var expectedString: string = providedString;
+
+            octetBuffer = new OctetBuffer(providedString);
+            expect(octetBuffer).to.exist;
+            expect(octetBuffer.available).to.equal(4);
+            expect(octetBuffer.position).to.equal(0);
+            expect(octetBuffer.remaining).to.equal(4);
+
+            serialized = octetBuffer.serialize();
+            expect(serialized).to.equal(expectedString);
         });
 
         it('accepts <Buffer>', () => {
