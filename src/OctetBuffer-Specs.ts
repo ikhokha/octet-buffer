@@ -3,21 +3,17 @@ import { OctetBuffer } from './OctetBuffer';
 
 describe('OctetBuffer', () => {
 
-    var buffer: Buffer;
-    var octetBuffer: OctetBuffer;
-    var serialized: string;
+    let octetBuffer: OctetBuffer;
+    let serialized: string;
 
     beforeEach(() => {
-        buffer = null;
-        octetBuffer = null;
-        serialized = null;
     });
 
     describe('#constructor', () => {
 
         it('accepts <string>(lowercase)', () => {
-            var providedString: string = 'deadbeef';
-            var expectedString: string = providedString.toUpperCase();
+            let providedString: string = 'deadbeef';
+            let expectedString: string = providedString.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
             expect(octetBuffer).to.exist;
@@ -30,8 +26,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <string>(uppercase)', () => {
-            var providedString: string = 'deadbeef'.toUpperCase();
-            var expectedString: string = providedString;
+            let providedString: string = 'deadbeef'.toUpperCase();
+            let expectedString: string = providedString;
 
             octetBuffer = new OctetBuffer(providedString);
             expect(octetBuffer).to.exist;
@@ -44,8 +40,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <Buffer>', () => {
-            var providedString = 'deadbeef01'.toUpperCase();
-            var providedBuffer: Buffer = new Buffer(providedString, 'hex');
+            let providedString = 'deadbeef01'.toUpperCase();
+            let providedBuffer: Buffer = Buffer.from(providedString, 'hex');
 
             octetBuffer = new OctetBuffer(providedBuffer);
             expect(octetBuffer).to.exist;
@@ -58,7 +54,7 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts no argument', () => {
-            var expectedString: string = '';
+            let expectedString: string = '';
 
             octetBuffer = new OctetBuffer();
             expect(octetBuffer).to.exist;
@@ -71,13 +67,12 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedNumber: number = 23;
+            let providedNumber: number = 23;
 
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer = new OctetBuffer(<any>providedNumber);
             };
             expect(throwFunction).to.throw;
-            expect(octetBuffer).to.not.exist;
         });
 
     });
@@ -85,7 +80,7 @@ describe('OctetBuffer', () => {
     describe('#serialize', () => {
 
         it('returns correct <string>', () => {
-            var providedString = '55deadbeef03'.toUpperCase();
+            let providedString = '55deadbeef03'.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
             serialized = octetBuffer.serialize();
@@ -97,11 +92,11 @@ describe('OctetBuffer', () => {
     describe('#peek', () => {
 
         it('returns correct number', () => {
-            var providedString: string = 'de'.toUpperCase();
-            var expectedNumber: number = 0xDE;
+            let providedString: string = 'de'.toUpperCase();
+            let expectedNumber: number = 0xDE;
 
             octetBuffer = new OctetBuffer(providedString);
-            var number: number = octetBuffer.peek();
+            let number: number = octetBuffer.peek();
             expect(octetBuffer.available).to.equal(1);
             expect(octetBuffer.position).to.equal(0);
             expect(octetBuffer.remaining).to.equal(1);
@@ -109,10 +104,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '';
+            let providedString: string = '';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.peek();
             };
             expect(throwFunction).to.throw;
@@ -123,7 +118,7 @@ describe('OctetBuffer', () => {
     describe('#reset', () => {
 
         it('resets position', () => {
-            var providedString = '55deadbeef03'.toUpperCase();
+            let providedString = '55deadbeef03'.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
             octetBuffer.reset();
@@ -137,8 +132,8 @@ describe('OctetBuffer', () => {
     describe('#writeUInt8', () => {
 
         it('accepts <number>(uint8)', () => {
-            var providedNumber: number = 0xDE;
-            var expectedString: string = 'de'.toUpperCase();
+            let providedNumber: number = 0xDE;
+            let expectedString: string = 'de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt8(providedNumber);
@@ -151,8 +146,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts and truncates <number>(uint16)', () => {
-            var providedNumber: number = 0xFEDE;
-            var expectedString: string = 'de'.toUpperCase();
+            let providedNumber: number = 0xFEDE;
+            let expectedString: string = 'de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt8(providedNumber);
@@ -165,10 +160,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeUInt8(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -179,8 +174,8 @@ describe('OctetBuffer', () => {
     describe('#writeUInt16', () => {
 
         it('accepts <number>(uint8)', () => {
-            var providedNumber: number = 0xDE;
-            var expectedString: string = '00de'.toUpperCase();
+            let providedNumber: number = 0xDE;
+            let expectedString: string = '00de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt16(providedNumber);
@@ -193,8 +188,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <number>(uint16)', () => {
-            var providedNumber: number = 0x20DE;
-            var expectedString: string = '20de'.toUpperCase();
+            let providedNumber: number = 0x20DE;
+            let expectedString: string = '20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt16(providedNumber);
@@ -207,8 +202,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts and truncates <number>(uint24)', () => {
-            var providedNumber: number = 0xFE02DE;
-            var expectedString: string = '02de'.toUpperCase();
+            let providedNumber: number = 0xFE02DE;
+            let expectedString: string = '02de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt16(providedNumber);
@@ -221,10 +216,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeUInt16(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -235,8 +230,8 @@ describe('OctetBuffer', () => {
     describe('#writeUInt24', () => {
 
         it('accepts <number>(uint16)', () => {
-            var providedNumber: number = 0x20DE;
-            var expectedString: string = '0020de'.toUpperCase();
+            let providedNumber: number = 0x20DE;
+            let expectedString: string = '0020de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt24(providedNumber);
@@ -249,8 +244,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <number>(uint24)', () => {
-            var providedNumber: number = 0xBB20DE;
-            var expectedString: string = 'bb20de'.toUpperCase();
+            let providedNumber: number = 0xBB20DE;
+            let expectedString: string = 'bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt24(providedNumber);
@@ -263,8 +258,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts and truncates <number>(uint32)', () => {
-            var providedNumber: number = 0xFEBB20DE;
-            var expectedString: string = 'bb20de'.toUpperCase();
+            let providedNumber: number = 0xFEBB20DE;
+            let expectedString: string = 'bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt24(providedNumber);
@@ -277,10 +272,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeUInt24(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -291,8 +286,8 @@ describe('OctetBuffer', () => {
     describe('#writeUInt32', () => {
 
         it('accepts <number>(uint24)', () => {
-            var providedNumber: number = 0xBB20DE;
-            var expectedString: string = '00bb20de'.toUpperCase();
+            let providedNumber: number = 0xBB20DE;
+            let expectedString: string = '00bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt32(providedNumber);
@@ -305,8 +300,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <number>(uint32)', () => {
-            var providedNumber: number = 0x07BB20DE;
-            var expectedString: string = '07bb20de'.toUpperCase();
+            let providedNumber: number = 0x07BB20DE;
+            let expectedString: string = '07bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt32(providedNumber);
@@ -319,8 +314,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts and truncates <number>(uint40)', () => {
-            var providedNumber: number = 0xFE07BB20DE;
-            var expectedString: string = '07bb20de'.toUpperCase();
+            let providedNumber: number = 0xFE07BB20DE;
+            let expectedString: string = '07bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeUInt32(providedNumber);
@@ -333,10 +328,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeUInt32(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -347,8 +342,8 @@ describe('OctetBuffer', () => {
     describe('#writeArray', () => {
 
         it('accepts <Array>', () => {
-            var providedArray: number[] = [0x00, 0xbb, 0x20, 0xde];
-            var expectedString: string = '00bb20de'.toUpperCase();
+            let providedArray: number[] = [0x00, 0xbb, 0x20, 0xde];
+            let expectedString: string = '00bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeArray(providedArray);
@@ -361,10 +356,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeArray(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -375,8 +370,8 @@ describe('OctetBuffer', () => {
     describe('#writeBuffer', () => {
 
         it('accepts <Buffer>', () => {
-            var providedBuffer: Buffer = new Buffer('00BB20DE', 'hex');
-            var expectedString: string = '00bb20de'.toUpperCase();
+            let providedBuffer: Buffer = Buffer.from('00BB20DE', 'hex');
+            let expectedString: string = '00bb20de'.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeBuffer(providedBuffer);
@@ -389,10 +384,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeBuffer(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -403,8 +398,8 @@ describe('OctetBuffer', () => {
     describe('#writeString', () => {
 
         it('accepts <string>(uppercase)', () => {
-            var providedString: string = '00bb20de'.toUpperCase();
-            var expectedString: string = providedString;
+            let providedString: string = '00bb20de'.toUpperCase();
+            let expectedString: string = providedString;
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeString(providedString);
@@ -417,8 +412,8 @@ describe('OctetBuffer', () => {
         });
 
         it('accepts <string>(lowercase)', () => {
-            var providedString: string = '00bb20de';
-            var expectedString: string = providedString.toUpperCase();
+            let providedString: string = '00bb20de';
+            let expectedString: string = providedString.toUpperCase();
 
             octetBuffer = new OctetBuffer();
             octetBuffer.writeString(providedString);
@@ -431,10 +426,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails with other type', () => {
-            var providedString: string = '0xDE';
+            let providedString: string = '0xDE';
 
             octetBuffer = new OctetBuffer();
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.writeBuffer(<any>providedString);
             };
             expect(throwFunction).to.throw;
@@ -446,11 +441,11 @@ describe('OctetBuffer', () => {
     describe('#readUInt8', () => {
 
         it('returns correct number', () => {
-            var providedString: string = 'de'.toUpperCase();
-            var expectedNumber: number = 0xDE;
+            let providedString: string = 'de'.toUpperCase();
+            let expectedNumber: number = 0xDE;
 
             octetBuffer = new OctetBuffer(providedString);
-            var number: number = octetBuffer.readUInt8();
+            let number: number = octetBuffer.readUInt8();
             expect(octetBuffer.available).to.equal(1);
             expect(octetBuffer.position).to.equal(1);
             expect(octetBuffer.remaining).to.equal(0);
@@ -458,10 +453,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '';
+            let providedString: string = '';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.readUInt8();
             };
             expect(throwFunction).to.throw;
@@ -472,11 +467,11 @@ describe('OctetBuffer', () => {
     describe('#readUInt16', () => {
 
         it('returns correct number', () => {
-            var providedString: string = '23de'.toUpperCase();
-            var expectedNumber: number = 0x23DE;
+            let providedString: string = '23de'.toUpperCase();
+            let expectedNumber: number = 0x23DE;
 
             octetBuffer = new OctetBuffer(providedString);
-            var number: number = octetBuffer.readUInt16();
+            let number: number = octetBuffer.readUInt16();
             expect(octetBuffer.available).to.equal(2);
             expect(octetBuffer.position).to.equal(2);
             expect(octetBuffer.remaining).to.equal(0);
@@ -484,10 +479,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '0xde';
+            let providedString: string = '0xde';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.readUInt16();
             };
             expect(throwFunction).to.throw;
@@ -498,11 +493,11 @@ describe('OctetBuffer', () => {
     describe('#readUInt24', () => {
 
         it('returns correct number', () => {
-            var providedString: string = 'fa23de'.toUpperCase();
-            var expectedNumber: number = 0xFA23DE;
+            let providedString: string = 'fa23de'.toUpperCase();
+            let expectedNumber: number = 0xFA23DE;
 
             octetBuffer = new OctetBuffer(providedString);
-            var number: number = octetBuffer.readUInt24();
+            let number: number = octetBuffer.readUInt24();
             expect(octetBuffer.available).to.equal(3);
             expect(octetBuffer.position).to.equal(3);
             expect(octetBuffer.remaining).to.equal(0);
@@ -510,10 +505,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '0x23de';
+            let providedString: string = '0x23de';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.readUInt24();
             };
             expect(throwFunction).to.throw;
@@ -524,11 +519,11 @@ describe('OctetBuffer', () => {
     describe('#readUInt32', () => {
 
         it('returns correct number', () => {
-            var providedString: string = '90fa23de'.toUpperCase();
-            var expectedNumber: number = 0x90FA23DE;
+            let providedString: string = '90fa23de'.toUpperCase();
+            let expectedNumber: number = 0x90FA23DE;
 
             octetBuffer = new OctetBuffer(providedString);
-            var number: number = octetBuffer.readUInt32();
+            let number: number = octetBuffer.readUInt32();
             expect(octetBuffer.available).to.equal(4);
             expect(octetBuffer.position).to.equal(4);
             expect(octetBuffer.remaining).to.equal(0);
@@ -536,10 +531,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '0xfa23de';
+            let providedString: string = '0xfa23de';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.readUInt32();
             };
             expect(throwFunction).to.throw;
@@ -550,12 +545,12 @@ describe('OctetBuffer', () => {
     describe('#readBuffer', () => {
 
         it('returns correct buffer', () => {
-            var providedString: string = '90fa23de'.toUpperCase();
-            var expectedString: string = '90fa'.toUpperCase();
+            let providedString: string = '90fa23de'.toUpperCase();
+            let expectedString: string = '90fa'.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
-            var buffer: Buffer = octetBuffer.readBuffer(2);
-            var bufferString = buffer.toString('hex').toUpperCase();
+            let buffer: Buffer = octetBuffer.readBuffer(2);
+            let bufferString = buffer.toString('hex').toUpperCase();
 
             expect(octetBuffer.available).to.equal(4);
             expect(octetBuffer.position).to.equal(2);
@@ -564,10 +559,10 @@ describe('OctetBuffer', () => {
         });
 
         it('fails in case of missing bytes', () => {
-            var providedString: string = '0xfa23de';
+            let providedString: string = '0xfa23de';
 
             octetBuffer = new OctetBuffer(providedString);
-            var throwFunction = () => {
+            let throwFunction = () => {
                 octetBuffer.readBuffer(4);
             };
             expect(throwFunction).to.throw;
@@ -578,12 +573,11 @@ describe('OctetBuffer', () => {
     describe('#readBufferRemaining', () => {
 
         it('returns correct buffer', () => {
-            var providedString: string = '90fa23de'.toUpperCase();
-            var expectedString: string = providedString;
+            let providedString: string = '90fa23de'.toUpperCase();
 
             octetBuffer = new OctetBuffer(providedString);
-            var buffer: Buffer = octetBuffer.readBufferRemaining();
-            var bufferString = buffer.toString('hex').toUpperCase();
+            let buffer: Buffer = octetBuffer.readBufferRemaining();
+            let bufferString = buffer.toString('hex').toUpperCase();
 
             expect(octetBuffer.available).to.equal(4);
             expect(octetBuffer.position).to.equal(4);

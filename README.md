@@ -1,155 +1,45 @@
-# octet-buffer
+# iKhokha Fork of octet-buffer Library
 
-[![npm version](https://badge.fury.io/js/octet-buffer.svg)](https://www.npmjs.com/package/octet-buffer)
-[![travis status](https://travis-ci.org/eumes/octet-buffer.svg?branch=develop)](https://travis-ci.org/eumes/octet-buffer)
+This is the official iKhokha-maintained fork of the [octet-buffer library](https://github.com/eumes/octet-buffer), originally developed by [eumes](https://github.com/eumes). The library is a lightweight wrapper around Node's native Buffer implementation, providing continuous read and write operations for various primitive types (uint8 to uint32).
 
-> Streaming access for Node Buffer
+## Key Information
 
-A lightweight wrapper around Node's native Buffer implementation, providing continuous read and write operations for various primitive types (uint8 to uint32).
+- **Author:** [eumes](https://github.com/eumes)
+- **Maintainers:** iKhokha Team
 
-## Usage
+## Purpose of the Fork
 
-### Importing the Module
+iKhokha has forked this library to:
 
-```js
-//typescript
-import { OctetBuffer } from './node_modules/src/OctetBuffer.ts';
+- Fix deprecation errors caused by using the outdated Buffer library.
+- Add enhancements and new features where required.
 
-//javascript
-var OctetBuffer = require('octet-buffer');
-```
+## Changes in This Fork
 
-### Initializing a new OctetBuffer
+- Initial fork based on version `0.9.0` of the original library.
+- Updated to use Node.js version 18 and compatible testing libraries (Mocha, Chai).
+- Version updated to `1.0.0` to reflect compatibility with the latest environment and tools.
+- Future changes specific to iKhokha will follow semantic versioning conventions.
 
-```js
-//without any initial content
-var octetBuffer = new OctetBuffer();
+## Installation
 
-//with hex string
-var hex = 'deadbeef';
-var octetBuffer = new OctetBuffer(hex);
-
-//with existing Buffer
-var hex = 'deadbeef';
-var buffer = new Buffer(hex, 'hex');
-var octetBuffer = new OctetBuffer(buffer);
-```
-
-### Accessing Properties
-
-```js
-//remaining bytes (or octets if you like) to read
-var remaining = octetBuffer.remaining;
-//remaining -> 4
-
-//current position from where to read or to where to write next
-var position = octetBuffer.position;
-//position -> 0
-
-//overall capacity of the backing Buffer
-var available = octetBuffer.available;
-//available -> 4
-```
-
-### Reading Values
-
-```js
-//primitives
-var num = octetBuffer.readUInt8();
-var num = octetBuffer.readUInt16();
-var num = octetBuffer.readUInt24();
-var num = octetBuffer.readUInt32();
-
-//specific number of bytes
-var num = 10
-var buffer = octetBuffer.readBuffer(num);
-
-//all remaining
-var buffer = octetBuffer.readBufferRemaining();
-
-//next byte without incrementing position
-var next = octetBuffer.peek();
-```
-
-### Writing Values
-
-> Note: If the backing buffer has not enough capacity for the new data, it will be extended.
-
-```js
-//primitives
-var num = 22;
-octetBuffer.writeUInt8(num);
-octetBuffer.writeUInt16(num);
-octetBuffer.writeUInt24(num);
-octetBuffer.writeUInt32(num);
-
-//array containing bytes
-var array = [0xde, 0xad, 0xbe, 0xef];
-octetBuffer.writeArray(array);
-
-//another buffer
-var buffer = new Buffer('deadbeef', 'hex');
-octetBuffer.writeBuffer(buffer);
-```
-
-### Additional
-
-```js
-//serializing to hex string
-var hex = octetBuffer.serialize();
-//hex -> 'deadbeef'
-
-//resetting position to 0
-octetBuffer.reset();
-```
-
-## Development
-
-### Prerequisites
-
-The project is build on `Typescript` for strong javascript typing and uses `DefinitelyTyped` for downloading typescript definitions for development dependencies. In the end, everything is glued together by `Gulp`.
+To install this forked library, use:
 
 ```bash
-npm install gulp -g
-npm install typescript -g
-npm install tsd -g
+npm install @ikhokha/octet-buffer
 ```
 
-### Build
+or
 
 ```bash
-gulp build
+yarn add @ikhokha/octet-buffer
 ```
 
-> Note: The ts.d file for the resulting javascript is currently created manually after the build.
+## Documentation
 
-### Test
+For general usage instructions, refer to the original [documentation here](https://github.com/eumes/octet-buffer#readme). Any iKhokha-specific updates or additional documentation will be added to this README.
 
-```bash
-gulp test
-```
+## Acknowledgments
 
-## License
-```
-The MIT License (MIT)
+We acknowledge the efforts of the original author, [eumes](https://github.com/eumes), for creating this library. This fork is built upon their work to serve the needs of iKhokha’s ecosystem.
 
-Copyright (c) 2015 Simon Eumes
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```

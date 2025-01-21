@@ -21,8 +21,8 @@ const UINT32_BYTES: number = 4;
 
 export class OctetBuffer {
 
-        private _backingBuffer: Buffer;
-        private _position: number;
+        private _backingBuffer: Buffer = Buffer.alloc(0);
+        private _position: number = 0;
 
         get backingBuffer(): Buffer {
             return this._backingBuffer;
@@ -50,16 +50,16 @@ export class OctetBuffer {
 
         constructor(param?: Buffer | string){
             if (typeof param === 'string'){
-                var string: string = <string>param;
+                let string = param;
                 string = string.toUpperCase();
-                var buffer = new Buffer(string, 'hex');
+                const buffer = Buffer.from(string, 'hex');
                 this.backingBuffer = buffer;
             }
             else if (Buffer.isBuffer(param)){
-                this.backingBuffer = <Buffer>param;
+                this.backingBuffer = param;
             }
             else if (param == null){
-                this.backingBuffer = new Buffer(0);
+                this.backingBuffer = Buffer.alloc(0);
             }
             else {
                 throw OctetBufferError.errorConstructorWrongParameterType();
@@ -79,25 +79,25 @@ export class OctetBuffer {
 
         readUInt8(): number {
             this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
-            var uint: number = this.backingBuffer.readUInt8(this.position);
+            const uint: number = this.backingBuffer.readUInt8(this.position);
             this.incrementPositionBy(UINT8_BYTES);
             return uint;
         }
         readUInt16(): number {
             this.checkRemainingBytesAndThrow('uint16', UINT16_BYTES);
-            var uint: number = this.backingBuffer.readUInt16BE(this.position);
+            const uint: number = this.backingBuffer.readUInt16BE(this.position);
             this.incrementPositionBy(UINT16_BYTES);
             return uint;
         }
         readUInt24(): number {
             this.checkRemainingBytesAndThrow('uint24', UINT24_BYTES);
-            var uint: number = OctetBuffer.readUInt24BE(this.backingBuffer, this.position);
+            const uint: number = OctetBuffer.readUInt24BE(this.backingBuffer, this.position);
             this.incrementPositionBy(UINT24_BYTES);
             return uint;
         }
         readUInt32(): number {
             this.checkRemainingBytesAndThrow('uint32', UINT32_BYTES);
-            var uint: number = this.backingBuffer.readUInt32BE(this.position);
+            const uint: number = this.backingBuffer.readUInt32BE(this.position);
             this.incrementPositionBy(UINT32_BYTES);
             return uint;
         }
@@ -105,18 +105,18 @@ export class OctetBuffer {
         readBuffer(count: number = 1): Buffer {
             this.checkParameterIsNumber(count);
             this.checkRemainingBytesAndThrow('Buffer', count);
-            var readBuffer = new Buffer(count);
+            const readBuffer = Buffer.alloc(count);
             this.backingBuffer.copy(readBuffer, 0, this.position, this.position + count);
             this.incrementPositionBy(count);
             return readBuffer;
         }
 
         readBufferRemaining(): Buffer {
-            var readBuffer = this.readBuffer(this.remaining);
+            const readBuffer = this.readBuffer(this.remaining);
             return readBuffer;
         }
 
-        writeUInt8(uint: number): OctetBuffer {
+        writeUInt8(uint: number): this {
             this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT8_BYTES);
             OctetBuffer.writeUInt8(this.backingBuffer, uint, this.position);
@@ -124,21 +124,21 @@ export class OctetBuffer {
             return this;
         }
 
-        writeUInt16(uint: number): OctetBuffer {
+        writeUInt16(uint: number): this {
             this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT16_BYTES);
             OctetBuffer.writeUInt16BE(this.backingBuffer, uint, this.position);
             this.incrementPositionBy(UINT16_BYTES);
             return this;
         }
-        writeUInt24(uint: number): OctetBuffer {
+        writeUInt24(uint: number): this {
             this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT24_BYTES);
             OctetBuffer.writeUInt24BE(this.backingBuffer, uint, this.position);
             this.incrementPositionBy(UINT24_BYTES);
             return this;
         }
-        writeUInt32(uint: number): OctetBuffer {
+        writeUInt32(uint: number): this {
             this.checkParameterIsNumber(uint);
             this.extendBackingBufferToAcceptAdditionalBytes(UINT32_BYTES);
             OctetBuffer.writeUInt32BE(this.backingBuffer, uint, this.position);
@@ -146,13 +146,13 @@ export class OctetBuffer {
             return this;
         }
 
-        writeArray(array: number[]): OctetBuffer {
+        writeArray(array: number[]): this {
             this.checkParameterIsArray(array);
-            var buffer = new Buffer(array);
+            const buffer = Buffer.from(array);
             return this.writeBuffer(buffer);
         }
 
-        writeBuffer(buffer: Buffer): OctetBuffer {
+        writeBuffer(buffer: Buffer): this {
             this.checkParameterIsBuffer(buffer);
             this.extendBackingBufferToAcceptAdditionalBytes(buffer.length);
             this.writeBufferToBackingBuffer(buffer);
@@ -160,22 +160,22 @@ export class OctetBuffer {
             return this;
         }
 
-        writeString(string: String): OctetBuffer {
+        writeString(string: string): this {
             this.checkParameterIsString(string);
             string = string.toUpperCase();
-            var buffer = new Buffer(string, 'hex');
+            const buffer = Buffer.from(string, 'hex');
             return this.writeBuffer(buffer);
         }
 
         serialize(): string {
-            var hex: string = this._backingBuffer.toString('hex');
+            let hex: string = this._backingBuffer.toString('hex');
             hex = hex.toUpperCase();
             return hex;
         }
 
         peek(): number {
             this.checkRemainingBytesAndThrow('uint8', UINT8_BYTES);
-            var uint: number = this.backingBuffer.readUInt8(this.position);
+            const uint: number = this.backingBuffer.readUInt8(this.position);
             return uint;
         }
 
@@ -184,8 +184,8 @@ export class OctetBuffer {
                 return;
             }
 
-            var missingBytes = additionalBytes - this.remaining;
-            var extendedBuffer = new Buffer(this.available + missingBytes);
+            const missingBytes = additionalBytes - this.remaining;
+            const extendedBuffer = Buffer.alloc(this.available + missingBytes);
             this.backingBuffer.copy(extendedBuffer, 0, 0, this.available);
             this.backingBuffer = extendedBuffer;
         }
@@ -195,71 +195,59 @@ export class OctetBuffer {
         }
 
         private static readUInt24BE(buffer: Buffer, position: number): number {
-            var uint: number = 0;
+            let uint: number = 0;
             uint = buffer.readUInt8(position) << 16;
             uint |= buffer.readUInt8(position + 1) << 8;
             uint |= buffer.readUInt8(position + 2) << 0;
             return uint;
         }
 
-        private static writeUInt8(buffer: Buffer, uint: number, positon: number): void {
-            buffer.writeUInt8((uint & 0xff) >>> 0, positon);
+        private static writeUInt8(buffer: Buffer, uint: number, position: number): void {
+            buffer.writeUInt8((uint & 0xff) >>> 0, position);
         }
 
-        private static writeUInt16BE(buffer: Buffer, uint: number, positon: number): void {
-            buffer.writeUInt8((uint & 0xff00) >>> 8, positon);
-            buffer.writeUInt8((uint & 0x00ff) >>> 0, positon + 1);
+        private static writeUInt16BE(buffer: Buffer, uint: number, position: number): void {
+            buffer.writeUInt8((uint & 0xff00) >>> 8, position);
+            buffer.writeUInt8((uint & 0x00ff) >>> 0, position + 1);
         }
 
-        private static writeUInt24BE(buffer: Buffer, uint: number, positon: number): void {
-            buffer.writeUInt8((uint & 0xff0000) >>> 16, positon);
-            buffer.writeUInt8((uint & 0x00ff00) >>> 8, positon + 1);
-            buffer.writeUInt8((uint & 0x0000ff) >>> 0, positon + 2);
+        private static writeUInt24BE(buffer: Buffer, uint: number, position: number): void {
+            buffer.writeUInt8((uint & 0xff0000) >>> 16, position);
+            buffer.writeUInt8((uint & 0x00ff00) >>> 8, position + 1);
+            buffer.writeUInt8((uint & 0x0000ff) >>> 0, position + 2);
         }
 
-        private static writeUInt32BE(buffer: Buffer, uint: number, positon: number): void {
-            buffer.writeUInt8((uint & 0xff000000) >>> 24, positon);
-            buffer.writeUInt8((uint & 0x00ff0000) >>> 16, positon + 1);
-            buffer.writeUInt8((uint & 0x0000ff00) >>> 8, positon + 2);
-            buffer.writeUInt8((uint & 0x000000ff) >>> 0, positon + 3);
+        private static writeUInt32BE(buffer: Buffer, uint: number, position: number): void {
+            buffer.writeUInt8((uint & 0xff000000) >>> 24, position);
+            buffer.writeUInt8((uint & 0x00ff0000) >>> 16, position + 1);
+            buffer.writeUInt8((uint & 0x0000ff00) >>> 8, position + 2);
+            buffer.writeUInt8((uint & 0x000000ff) >>> 0, position + 3);
         }
 
         private checkRemainingBytesAndThrow(type: string, requiredBytes: number){
             if (requiredBytes > this.remaining) {
-                var missingBytes = requiredBytes - this.remaining;
+                let missingBytes = requiredBytes - this.remaining;
                 throw OctetBufferError.errorReadingCausedByInsufficientBytes(type, missingBytes);
             }
         }
 
         private checkParameterIsString(param: any){
-            if (param == null){
-                throw OctetBufferError.errorMethodWrongParameterType();
-            }
-            else if (typeof param !== 'string'){
+            if (param == null || typeof param !== 'string'){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
         private checkParameterIsNumber(param: any){
-            if (param == null){
-                throw OctetBufferError.errorMethodWrongParameterType();
-            }
-            else if (typeof param !== 'number'){
+            if (param == null || typeof param !== 'number'){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
         private checkParameterIsArray(param: any[]){
-            if (param == null){
-                throw OctetBufferError.errorMethodWrongParameterType();
-            }
-            else if (!Array.isArray(param)){
+            if (param == null || !Array.isArray(param)){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
         private checkParameterIsBuffer(param: any){
-            if (param == null){
-                throw OctetBufferError.errorMethodWrongParameterType();
-            }
-            else if (!Buffer.isBuffer(param)){
+            if (param == null || !Buffer.isBuffer(param)){
                 throw OctetBufferError.errorMethodWrongParameterType();
             }
         }
