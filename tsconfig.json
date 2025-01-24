@@ -1,23 +1,21 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "module": "commonjs",
-        "removeComments": true,
-        "sourceMap": false,
-        "target": "es5",
-        "noImplicitAny": true,
-        "outDir": "./dist",
-        "rootDir": "./src"
-    },
-    "compileOnSave": true,
-    "filesGlob": [
-        "./src/**/*.ts",
-        "./typings/tsd.d.ts",
-        "!./node_modules/**/*.ts"
-    ],
-    "files": [
-        "./src/OctetBuffer-Specs.ts",
-        "./src/OctetBuffer.ts",
-        "./typings/tsd.d.ts"
-    ]
+  "compilerOptions": {
+    "target": "ES2020",                  // Ensure it targets a modern JS version
+    "module": "ESNext",                  // Enable ESM support
+    "moduleResolution": "node",          // Use Node module resolution
+    "esModuleInterop": true,             // Enable interop with CommonJS
+    "allowSyntheticDefaultImports": true,// Allow synthetic default imports
+    "strict": true,                      // Enable strict type checking
+    "sourceMap": true,                   // Enable source maps
+    "resolveJsonModule": true,           // Allow importing JSON
+    "outDir": "dist",                    // Set output directory for compiled files
+    "rootDir": "src",                    // Set root directory for source files
+    "declaration": true,                 // Generate declaration files
+    "declarationMap": true               // Generate declaration map
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
