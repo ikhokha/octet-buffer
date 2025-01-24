@@ -11,6 +11,7 @@
         "type": "git",
         "url": "git+https://github.com/ikhokha/octet-buffer.git"
     },
+    "type": "module",
     "main": "./dist/OctetBuffer.js",
     "typescript": {
         "definition": "./dist/OctetBuffer.d.ts"
