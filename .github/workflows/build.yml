@@ -6,8 +6,7 @@ on:
 
 env:
     GITHUB_PACKAGE_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN}}
-    # NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
-    NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+    NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
 
 jobs:
     build-pkg:
@@ -20,6 +19,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: '18.x'
+                  registry-url: 'https://npm.pkg.github.com'
+                  scope: '@octocat'
 
             - name: Copying config files
               run: cp ./.npmrc ~/.npmrc
