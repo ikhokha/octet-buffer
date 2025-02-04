@@ -6,8 +6,7 @@ on:
 
 env:
     GITHUB_PACKAGE_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN}}
-    # NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
-    NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+    NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
 
 jobs:
     build-pkg:
@@ -21,6 +20,7 @@ jobs:
               with:
                   node-version: '18.x'
                   registry-url: 'https://npm.pkg.github.com'
+                  scope: '@octocat'
 
             - name: Copying config files
               run: cp ./.npmrc ~/.npmrc
@@ -37,5 +37,3 @@ jobs:
 
             - name: Dry-run publish package
               run: npm publish --dry-run
-              env:
-                NODE_AUTH_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN}}
