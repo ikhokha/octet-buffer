@@ -6,7 +6,8 @@ on:
 
 env:
     GITHUB_PACKAGE_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN}}
-    NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
+    # NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
+    NPM_ACCESS_TOKEN: ${{ secrets.NPM_PKG_TOKEN }}
 
 jobs:
     build-pkg:
