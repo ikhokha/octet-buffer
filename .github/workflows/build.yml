@@ -5,8 +5,6 @@ on:
         branches: [main]
 
 env:
-    SSH_IKHOKHA_BOT: ${{ secrets.IKHOKHA_BOT_SSH }}
-    SSH_AUTH_SOCK: /tmp/ssh_agent.sock
     NODE_VERSION: 18.x
     GITHUB_PACKAGE_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN}}
     NPM_ACCESS_TOKEN: ${{ secrets.GHP_ACCESS_TOKEN }}
@@ -17,9 +15,6 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
-
-            - name: Setup pkg access
-              uses: ./.github/actions/setup-bot
 
             - name: Setup node
               uses: actions/setup-node@v3
@@ -43,4 +38,4 @@ jobs:
               run: yarn typecheck
 
             - name: Dry-run publish package
-              run: npm publish --dry-run 
+              run: npm publish --dry-run --access public
