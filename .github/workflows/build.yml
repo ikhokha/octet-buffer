@@ -25,6 +25,10 @@ jobs:
               run: cp ./.npmrc ~/.npmrc
               shell: bash
 
+            - name: Authenticate with GitHub Package Registry
+              run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHP_ACCESS_TOKEN }}" > ~/.npmrc
+              shell: bash
+
             - name: Install dependencies
               run: yarn install
 
@@ -38,4 +42,4 @@ jobs:
               run: yarn typecheck
 
             - name: Dry-run publish package
-              run: npm publish --dry-run --access restricted
+              run: npm publish --dry-run --access public
