@@ -25,6 +25,16 @@ jobs:
               run: cp ./.npmrc ~/.npmrc
               shell: bash
 
+            - name: Authenticate with npm adduser
+              run: |
+                echo "Logging in to GitHub Package Registry"
+                npm adduser <<EOF
+                @ikhokha
+                ${{ secrets.GITHUB_ACTOR }}
+                ${{ secrets.GHP_ACCESS_TOKEN }}
+                EOF
+              shell: bash
+
             - name: Install dependencies
               run: yarn install
 
