@@ -38,4 +38,4 @@ jobs:
               run: yarn typecheck
 
             - name: Publish npm pkg
-              run: npm publish
+              run: npm publish --access restricted

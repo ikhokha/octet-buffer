@@ -38,4 +38,4 @@ jobs:
               run: yarn typecheck
 
             - name: Dry-run publish package
-              run: npm publish --dry-run
+              run: npm publish --dry-run --access restricted
