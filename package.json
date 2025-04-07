@@ -2,7 +2,6 @@
     "name": "@ikhokha/octet-buffer",
     "version": "1.0.1",
     "description": "Lightweight wrapper around Node Buffer, providing streaming read/write for uint8 to unit32",
-    "private": true, 
     "author": "Simon Eumes <simon@sim0n.net>",
     "contributors": [
         {

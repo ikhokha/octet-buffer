@@ -1,0 +1,11 @@
+name: "Setup Bot"
+description: "Steps to setup bot"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup package access
+      shell: bash
+      run: |
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        echo "$SSH_IKHOKHA_BOT" | tr -d '\r' | DISPLAY=None ssh-add - >/dev/null
